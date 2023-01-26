@@ -1,0 +1,5 @@
+/* Creating a new user and granting privileges */
+
+alter session set "_ORACLE_SCRIPT"=true;
+CREATE USER user101 IDENTIFIED BY 101;
+GRANT CONNECT, RESOURCE, DBA TO user101;
