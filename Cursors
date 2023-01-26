@@ -1,0 +1,93 @@
+/* CURSEURS */
+
+SET SERVEROUTPUT ON;
+
+/* Curseur paramétré C1 : Trier les offres selon le salaire */
+DECLARE CURSOR C1 (v_sal Offre.Salaire%TYPE) IS 
+SELECT Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis
+FROM Offre
+WHERE Salaire > v_sal;
+v_Id Offre.Id_offre%TYPE;
+v_Nom Offre.Nom_offre%TYPE;
+v_Date Offre.Date_publication%TYPE;
+v_Secteur Offre.Secteur_act%TYPE;
+v_Mode Offre.Mode_travail%TYPE;
+v_Diplome Offre.Diplome_requis%TYPE;
+BEGIN 
+OPEN C1 (300);         /* Les offres dont le salaire dépasse 300 */
+LOOP
+FETCH C1 INTO v_Id, v_Nom, v_Date, v_Secteur, v_Mode, v_Diplome;
+EXIT WHEN C1%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE('Id offre :' || v_Id);
+DBMS_OUTPUT.PUT_LINE('Intitulé offre: ' ||v_Nom);
+DBMS_OUTPUT.PUT_LINE('Date publication: '||v_Date); 
+DBMS_OUTPUT.PUT_LINE('Secteur activité: '||v_Secteur);
+DBMS_OUTPUT.PUT_LINE('Mode de travail: '||v_Mode);
+DBMS_OUTPUT.PUT_LINE('Diplome requis : '||v_Diplome);
+DBMS_OUTPUT.PUT_LINE('______________________________');
+END LOOP;
+CLOSE C1;
+END;
+/
+
+
+/* Curseur paramétré C2 : Trier les offres selon le secteur d'activité */
+DECLARE CURSOR C2 (v_act Candidat.Secteur_act_cdt%TYPE) IS
+SELECT Id_offre 
+FROM Offre
+WHERE v_act = Secteur_act;
+v_offre Offre.Id_offre%TYPE;
+BEGIN 
+OPEN C2 ('Information Systems');   /* Test avec le secteur dactivité Information Systems */
+LOOP 
+FETCH C2 INTO v_offre;
+EXIT WHEN C2%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(v_offre);
+END LOOP;
+CLOSE C2;
+END;
+/
+
+/* Curseur simple C3 */
+/* Trier offre par date de publication et diplome */
+DECLARE CURSOR C3 IS
+SELECT Nom_offre, Date_publication
+FROM Offre
+WHERE Salaire>200
+AND 
+Diplome_requis='Masters';
+Nom Offre.Nom_offre%TYPE;
+DatePub Offre.Date_publication%TYPE;
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Noms offres :     Date publication :');
+OPEN C3;
+LOOP 
+FETCH C3 INTO Nom, DatePub;
+EXIT WHEN C3%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(Nom||'     '||DatePub);
+END LOOP;
+CLOSE C3;
+END;
+/
+
+
+/* Curseur C4 */
+/* Trier offre par date */
+DECLARE CURSOR C4 IS
+SELECT Nom_offre, Diplome_requis, Salaire
+FROM Offre 
+ORDER BY Date_publication;
+Nom Offre.Nom_offre%TYPE;
+Diplome Offre.Diplome_requis%TYPE;
+Sal Offre.Salaire%TYPE;
+BEGIN 
+DBMS_OUTPUT.PUT_LINE('Les offres triées par date :');
+OPEN C4;
+LOOP
+FETCH C4 INTO Nom, Diplome, Sal;
+EXIT WHEN C4%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(Nom || ' | ' || Diplome || ' | ' || Sal);
+END LOOP;
+CLOSE C4;
+END;
+/
