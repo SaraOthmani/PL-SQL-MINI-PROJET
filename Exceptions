@@ -1,0 +1,27 @@
+/* EXCEPTIONS */
+
+/* Une exception rejeter_candidature est déclenchée si la demande du candidat est rejetée, permettant d'insérer */
+/* les différentes informations du dossier en question (dossier rejeté) dans une table SQL Rejet */
+DROP TABLE Rejet;
+CREATE TABLE Rejet(Id char(3), Datecand Date, Etat varchar2(30)); 
+DECLARE CURSOR C2 IS SELECT Id_demande, Date_candidature, Etat_dossier
+FROM Demande
+WHERE Etat_dossier ='Rejete';
+v_Id Demande.Id_demande%TYPE;
+v_date Demande.Date_candidature%TYPE;
+v_etat Demande.Etat_dossier%TYPE;
+rejeter_candidature EXCEPTION;
+BEGIN 
+OPEN C2;
+LOOP
+FETCH C2 INTO v_Id, v_date, v_etat;
+EXIT WHEN C2%NOTFOUND;
+IF v_etat = 'Rejete' THEN RAISE rejeter_candidature;
+END IF;
+END LOOP; 
+CLOSE C2;
+EXCEPTION 
+WHEN rejeter_candidature THEN INSERT INTO Rejet VALUES(v_Id, v_date, v_etat);
+END;
+/
+SELECT * FROM Rejet;
