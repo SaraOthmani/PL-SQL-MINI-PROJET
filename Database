@@ -1,0 +1,146 @@
+/* BASE DE DONNEES */
+
+
+/* Drop tables */
+
+DROP TABLE Candidat;
+DROP TABLE Administrateur;
+DROP TABLE Recruteur;
+DROP TABLE Offre;
+DROP TABLE Demande;
+
+/* Create tables */
+
+
+/* Table Candidat */
+
+CREATE TABLE Candidat(
+Id_cdt CHAR(3),
+Prenom VARCHAR2(30),
+Nom VARCHAR2(30),
+Adresse_mail VARCHAR2(30),
+Age NUMBER(2),
+Pays_cdt VARCHAR2(30),
+Ville_cdt VARCHAR2(30),
+Diplome VARCHAR2(30),
+Secteur_act_cdt VARCHAR2(30),
+Profil VARCHAR2(30),
+Experience Number(2),
+Id_demande CHAR(3),
+CONSTRAINT Pk_cdt PRIMARY KEY(Id_cdt));
+
+/* Table Administrateur */
+
+CREATE TABLE Administrateur(
+Id_admin CHAR(3),
+Login VARCHAR2(30),
+Password VARCHAR2(30),
+Id_offre CHAR(3),
+CONSTRAINT Pk_admin PRIMARY KEY(Id_admin));
+
+/* Table Recruteur */
+
+CREATE TABLE Recruteur(
+Id_entp CHAR(3),
+Nom_entp VARCHAR2(30),
+Type_entp VARCHAR2(30),
+Pays_entp VARCHAR2(30),
+Ville_entp VARCHAR2(30),
+Industrie_entp VARCHAR2(30),
+Secteur_act_entp VARCHAR2(30),
+Id_offre CHAR(3),
+CONSTRAINT Pk_entp PRIMARY KEY(Id_entp));
+
+/* Table Offre */ 
+
+CREATE TABLE Offre(
+Id_offre CHAR(3),
+Nom_offre VARCHAR2(30), 
+Date_publication DATE, 
+Secteur_act VARCHAR2(30), 
+Mode_travail VARCHAR2(30), 
+Diplome_requis VARCHAR2(30),  
+Salaire NUMBER(8,3),
+Id_demande CHAR(3),
+CONSTRAINT Pk_offre PRIMARY KEY(Id_offre));
+
+/* Table Demande */ 
+
+CREATE TABLE Demande(
+Id_demande CHAR(3),
+Date_candidature DATE, 
+Etat_dossier VARCHAR2(30),
+CONSTRAINT Pk_demande PRIMARY KEY(Id_demande));
+
+
+/* Add Relational constraints */
+
+/* ADD relational constraints (foreign keys) */
+ALTER TABLE Candidat
+ADD CONSTRAINT Fk_cdt FOREIGN KEY (Id_demande) REFERENCES Demande (Id_demande);
+
+ALTER TABLE Administrateur
+ADD CONSTRAINT Fk_admin FOREIGN KEY (Id_offre) REFERENCES Offre(Id_offre);
+
+ALTER TABLE Recruteur
+ADD CONSTRAINT Fk_entp FOREIGN KEY (Id_offre) REFERENCES Offre(Id_offre);
+
+ALTER TABLE Offre
+ADD CONSTRAINT Fk_offre FOREIGN KEY (Id_demande) REFERENCES Demande (Id_demande);
+
+
+/* Add records */
+
+/* INSERT INTO Candidat */
+INSERT INTO Candidat (Id_cdt, Prenom, Nom, Adresse_mail, Age, Pays_cdt, Ville_cdt, Diplome, Secteur_act_cdt, Profil, Experience)
+VALUES ('1', 'Carol', 'Anderson', 'Carol.anderson@outlook.com', 23, 'United States', 'San Francisco', 'Bachelor', 'Dentistry', 'Dentist', 0);
+INSERT INTO Candidat (Id_cdt, Prenom, Nom, Adresse_mail, Age, Pays_cdt, Ville_cdt, Diplome, Secteur_act_cdt, Profil, Experience)
+VALUES ('2', 'Linda', 'Rahhal', 'Linda.Rahhal@gmail.com', 25, 'Lebanon', 'Beyrouth', 'Masters', 'Finance and insurance', 'Finance and opetions Associate', 6);
+INSERT INTO Candidat (Id_cdt, Prenom, Nom, Adresse_mail, Age, Pays_cdt, Ville_cdt, Diplome, Secteur_act_cdt, Profil, Experience)
+VALUES ('14', 'Zeineb', 'Essefi', 'Zeineb.essefi98@live.fr', 25, 'Tunisia', 'Tunis', 'Bachelor', 'Advertising and marketing', 'Digital marketing Advisor', 0);
+INSERT INTO Candidat (Id_cdt, Prenom, Nom, Adresse_mail, Age, Pays_cdt, Ville_cdt, Diplome, Secteur_act_cdt, Profil, Experience)
+VALUES ('15', 'Giovanna', 'Terracciano', 'Giovanna.terracciano@gmail.com', 26, 'Italy', 'Naples', 'Bachelor', 'Consulting', 'HR consultant', 2);
+INSERT INTO Candidat (Id_cdt, Prenom, Nom, Adresse_mail, Age, Pays_cdt, Ville_cdt, Diplome, Secteur_act_cdt, Profil, Experience)
+VALUES ('20', 'Antoine', 'Dupont', 'Antoine_dupont566@gmail.com', 28, 'France', 'Paris', 'Masters', 'Information Systems', 'Data Analyst', 8);
+
+/* INSERT INTO Administrateur */
+INSERT INTO Administrateur (Id_admin, Login, Password)
+VALUES ('3', 'ADMIN101', 'ADMIN0000');
+
+/* INSERT INTO Recruteur */
+INSERT INTO Recruteur (Id_entp, Nom_entp, Type_entp, Pays_entp, Ville_entp, Industrie_entp, Secteur_act_entp)
+VALUES ('1', 'Coca Cola', 'Public', 'United States', 'Atlanta, Georgia', 'Manufacturing', 'Food manufacturing');
+INSERT INTO Recruteur (Id_entp, Nom_entp, Type_entp, Pays_entp, Ville_entp, Industrie_entp, Secteur_act_entp)
+VALUES ('2', 'McKinsey and Company', 'Public', 'France', 'Paris', 'Consulting', 'Business consultancy');
+INSERT INTO Recruteur (Id_entp, Nom_entp, Type_entp, Pays_entp, Ville_entp, Industrie_entp, Secteur_act_entp)
+VALUES ('9', 'Tri Creek Family Industry', 'Private', 'United States', 'Indiana', 'Healthcare', 'Food manufacturing');
+INSERT INTO Recruteur (Id_entp, Nom_entp, Type_entp, Pays_entp, Ville_entp, Industrie_entp, Secteur_act_entp)
+VALUES ('17', 'The Walt Disney Company', 'Private', 'Spain', 'Madrid', 'Entertainment and Media', 'Media production');
+INSERT INTO Recruteur (Id_entp, Nom_entp, Type_entp, Pays_entp, Ville_entp, Industrie_entp, Secteur_act_entp)
+VALUES ('18', 'Al GHAZI BUSINESS SERVICES', 'Private', 'United Arab Emirates', 'Abu Dhabi', 'Consulting', 'Business services'); 
+
+/* INSERT INTO Offre */
+INSERT INTO Offre (Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis, Salaire)
+VALUES ( '1', 'Business Intelligence manager', '01/12/2022', 'Information Systems', 'Full time', 'Bachelor', 108.397);
+INSERT INTO Offre (Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis, Salaire)
+VALUES ( '102', 'Data scientist', '02/11/2022', 'Information Systems', 'Full time', 'Masters', 228.355);
+INSERT INTO Offre (Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis, Salaire)
+VALUES ( '9', 'Dental Assistant', '19/11/2022', 'Dentistry', 'Part time', 'Masters', 401.000);
+INSERT INTO Offre (Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis, Salaire)
+VALUES ( '17', 'Business Intelligence manager', '02/12/2022', 'Payroll compliance management', 'Full time', 'Bachelor', 125.900);
+INSERT INTO Offre (Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis, Salaire)
+VALUES ( '18', 'Manager HR', '30/11/2022', 'Consulting', 'Full time', 'Bachelor', 320.250);
+  
+/* INSERT INTO Demande */
+INSERT INTO Demande (Id_demande, Date_candidature, Etat_dossier)
+VALUES ('25', '08/12/2022', 'en cours de traitement');
+INSERT INTO Demande (Id_demande, Date_candidature, Etat_dossier)
+VALUES ('34', '30/11/2022', 'Retenu');
+INSERT INTO Demande (Id_demande, Date_candidature, Etat_dossier)
+VALUES ('88', '06/12/2022', 'Retenu');
+INSERT INTO Demande (Id_demande, Date_candidature, Etat_dossier)
+VALUES ('91', '03/12/2022', 'Rejete');
+INSERT INTO Demande (Id_demande, Date_candidature, Etat_dossier)
+VALUES ('87', '30/11/2022', 'Retenu');
+
+COMMIT;
