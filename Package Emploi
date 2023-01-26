@@ -1,0 +1,102 @@
+/* PACKAGE Emploi */ 
+
+/* SPECIFICATION */
+CREATE OR REPLACE PACKAGE Emploi AS 
+
+FUNCTION filtrer_mode (v_mode Offre.Mode_travail%TYPE) RETURN NUMBER;
+FUNCTION etat_candidature(V_etat Demande.Etat_dossier%TYPE) RETURN NUMBER;
+PROCEDURE Remove_cdt(v_cdt in Candidat.Id_cdt%TYPE);
+PROCEDURE Remove_entp(v_entp in Recruteur.Id_entp%TYPE);
+PROCEDURE Remove_offre(v_offre in Offre.Id_offre%TYPE);
+PROCEDURE experience_cdt(v_Id Candidat.Id_cdt%TYPE);
+PROCEDURE retenir_candidature(v_id Demande.Id_demande%TYPE);
+PROCEDURE update_salaire(Id IN Offre.Id_offre%TYPE, pourcentage IN NUMBER);
+END Emploi;
+/
+
+/* BODY */
+CREATE OR REPLACE PACKAGE BODY Emploi AS 
+
+FUNCTION filtrer_mode (v_mode Offre.Mode_travail%TYPE)
+RETURN NUMBER IS 
+v_filtre Offre%ROWTYPE;
+Nombre_offre INTEGER;
+BEGIN 
+SELECT COUNT(*) 
+INTO Nombre_offre 
+FROM Offre
+WHERE mode_travail = v_mode;
+RETURN (Nombre_offre);
+END filtrer_mode;
+ 
+FUNCTION etat_candidature(V_etat Demande.Etat_dossier%TYPE) 
+RETURN NUMBER IS 
+nb_cdt INTEGER;
+BEGIN 
+SELECT COUNT(*) 
+INTO nb_cdt
+FROM Demande 
+WHERE Etat_dossier=V_etat;
+RETURN (nb_cdt);
+END etat_candidature;
+
+PROCEDURE Remove_cdt(v_cdt in Candidat.Id_cdt%TYPE) IS 
+BEGIN 
+DELETE FROM Candidat
+WHERE Id_cdt = v_cdt;
+COMMIT;
+END Remove_cdt;
+
+PROCEDURE Remove_entp(v_entp in Recruteur.Id_entp%TYPE) IS 
+BEGIN 
+DELETE FROM Recruteur
+WHERE Id_entp = v_entp;
+COMMIT;
+END Remove_entp;
+
+PROCEDURE Remove_offre(v_offre in Offre.Id_offre%TYPE) IS 
+BEGIN 
+DELETE FROM Offre
+WHERE v_offre = Id_offre;
+COMMIT;
+END Remove_offre;
+
+PROCEDURE experience_cdt(v_Id Candidat.Id_cdt%TYPE) IS
+v_exp Candidat.Experience%TYPE;
+BEGIN  
+SELECT Experience 
+INTO v_exp
+FROM Candidat 
+WHERE v_Id = Id_cdt;
+IF v_exp>0 THEN DBMS_OUTPUT.PUT_LINE('Le candidat qui a pour id '||v_Id || 'a de l expérience.');
+ElSE
+DBMS_OUTPUT.PUT_LINE('pas d experience');
+END IF;
+END experience_cdt;
+
+PROCEDURE retenir_candidature(v_id Demande.Id_demande%TYPE) IS
+dossier Demande%ROWTYPE;
+BEGIN
+INSERT INTO Confirmation VALUES (dossier.Id_demande, dossier.Date_candidature, dossier.Etat_dossier);
+END retenir_candidature;
+
+PROCEDURE update_salaire(Id IN Offre.Id_offre%TYPE, pourcentage IN NUMBER) IS
+v_salaire Offre.Salaire%TYPE;
+BEGIN 
+SELECT Salaire 
+INTO v_salaire
+FROM Offre
+WHERE Id=Id_offre;
+DBMS_OUTPUT.PUT_LINE('Le salaire avant la mise à jour est: '||v_salaire);
+UPDATE Offre 
+SET salaire = salaire*pourcentage
+WHERE Id=Id_offre;
+SELECT Salaire 
+INTO v_salaire
+FROM Offre
+WHERE Id=Id_offre;
+DBMS_OUTPUT.PUT_LINE('Le salaire avant la mise à jour est: '||v_salaire);
+END update_salaire;
+
+END Emploi;
+/
