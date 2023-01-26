@@ -1,0 +1,53 @@
+SET SERVEROUTPUT ON;
+
+/* Fonction filtrer_mode */
+CREATE OR REPLACE FUNCTION filtrer_mode (v_mode Offre.Mode_travail%TYPE)
+RETURN NUMBER IS 
+v_filtre Offre%ROWTYPE;
+Nombre_offre INTEGER;
+BEGIN 
+SELECT COUNT(*) 
+INTO Nombre_offre 
+FROM Offre
+WHERE mode_travail = v_mode;
+RETURN (Nombre_offre);
+END filtrer_mode;
+/
+
+/* Execution de la fonction filtrer_mode */
+VARIABLE M1 NUMBER;
+EXECUTE :M1:=filtrer_mode('Part time');
+PRINT M1;
+
+/* Execution de la fonction filtrer_mode */
+VARIABLE M2 NUMBER;
+EXECUTE :M2:=filtrer_mode('Full time');
+PRINT M2;
+
+/* Fonction etat_candidature */
+/* Fonction stockée etat_candidature qui renvoie le nombre de dossiers de candidature quelque soit l'état donnée */ 
+CREATE OR REPLACE FUNCTION etat_candidature(V_etat Demande.Etat_dossier%TYPE) 
+RETURN NUMBER IS 
+nb_cdt INTEGER;
+BEGIN 
+SELECT COUNT(*) 
+INTO nb_cdt
+FROM Demande 
+WHERE Etat_dossier=V_etat;
+RETURN (nb_cdt); 
+END etat_candidature;
+/
+/* Execution de la fonction etat_candidature (dans le cas d'une candidature retenue) */
+VARIABLE nb NUMBER;
+EXECUTE :nb:=etat_candidature('Retenu');
+PRINT nb;
+
+/* Execution de la fonction etat_candidature (dans le cas d'une candidature en cours de traitement) */
+VARIABLE nb2 NUMBER;
+EXECUTE :nb2:=etat_candidature('en cours de traitement');
+PRINT nb2;
+
+/* Execution de la fonction etat_candidature (dans le cas d'une candidature rejetee */
+VARIABLE nb3 NUMBER;
+EXECUTE :nb3:=etat_candidature('Rejete');
+PRINT nb3;
