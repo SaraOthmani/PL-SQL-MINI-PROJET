@@ -1,0 +1,31 @@
+/* TRIGGERS */
+
+/* TRIGGER salary_update */
+CREATE OR REPLACE TRIGGER salary_update
+BEFORE UPDATE OF Salaire
+ON Offre
+FOR EACH ROW
+BEGIN 
+IF((:OLD.Salaire/:NEW.Salaire) >= 2.5) THEN
+RAISE_APPLICATION_ERROR(-20002, 'Pourcentage de mise à jour elevé');
+END IF;
+END;
+/
+
+
+
+/* TRIGGER dateUpdate */
+CREATE OR REPLACE TRIGGER dateUpdate
+BEFORE INSERT OR UPDATE OF Date_publication 
+ON Offre 
+FOR EACH ROW 
+BEGIN 
+IF (:NEW.Date_publication > sysdate) THEN
+RAISE_APPLICATION_ERROR(-20000, 'La date indiquée est supérieure à la date du système');
+END IF;
+END;
+/
+
+	/* TEST DU TRIGGER dateUpdate */
+INSERT INTO Offre (Id_offre, Nom_offre, Date_publication, Secteur_act, Mode_travail, Diplome_requis, Salaire)
+VALUES ( '11', 'Business analyst manager', '27/02/2023', 'Information Systems', 'Full time', 'Bachelor', 108.397);
